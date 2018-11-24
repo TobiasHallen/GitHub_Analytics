@@ -68,12 +68,13 @@ public class Interrogate
 		ToJSON tj = new ToJSON();
 		q.add(user);
 		userIndex.put(user, index);
-		tj.users.add(user);
+		tj.users.add(new UserData(user, getRepos(user)));
 
 		index++;
 		while(!q.isEmpty()&&index<limit)
 		{
 			user = q.remove();
+			int x = getRepos(user);
 			List<String> followings = getFollowings(user);
 			for(String follow: followings)
 			{
@@ -81,7 +82,8 @@ public class Interrogate
 				{
 					q.add(follow);
 					userIndex.put(follow, index);
-					tj.users.add(follow);
+					x = getRepos(follow);
+					tj.users.add(new UserData(follow, x));
 					index++;
 					if(index==limit)
 					{

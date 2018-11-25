@@ -89,6 +89,8 @@ function drawGraph() {
       .style("fill", function(d) {return colour(d).toString();})
 	  .style("stroke", "White")
 	  .style("stroke-width", "2")
+	  .on("mouseover", function(d) {nodeToolTip(d);})
+      .on("mouseout", function(d) { nodeToolTipOff(d)})
       .call(d3.drag()
 		.on("start", dragstarted)
         .on("drag", dragged)
@@ -165,6 +167,30 @@ function drawGraph() {
 	  d.fx = null;
 	  d.fy = null;
 };
+
+    var nodeToolTipOff = function(z) {
+      link.style("stroke-opacity", 0.4);
+      node.style("stroke-width", 2)
+    };
+	
+    var nodeToolTip = function(z) {
+      var connectedTo = {};
+      connectedTo[z.index] = true;
+
+      link.filter(function(d) {
+          if (d.source == z) {connectedTo[d.target.index] = true
+            return true
+          } 
+		  else {
+            return false
+          }
+        })
+        .style("stroke-opacity", 1)
+
+      node.filter(function(d) {return connectedTo[d.index]})
+        .style("stroke-width", 4);
+
+    };
 
   });
 }

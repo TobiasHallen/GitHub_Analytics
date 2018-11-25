@@ -70,8 +70,8 @@ function drawGraph() {
       .data(drawGraph.index)
       .enter().append("line")
       .attr("class", "link")
-	  .style("stroke-opacity", function(d) {return .4})
-      .style("stroke-width", function(d) {return 5});
+	  .style("stroke-opacity","1")
+      .style("stroke-width", "5");
 
 	  	
     var colour = function(d) {
@@ -169,8 +169,16 @@ function drawGraph() {
 };
 
     var nodeToolTipOff = function(z) {
-      link.style("stroke-opacity", 0.4);
+      link.style("stroke-opacity", 1.0);
       node.style("stroke-width", 2)
+
+      repoLabel
+        .attr("font-weight", "normal")
+        .style("fill-opacity", 1)
+
+      loginLabel
+        .attr("font-weight", "normal")
+        .style("fill-opacity", 1)
     };
 	
     var nodeToolTip = function(z) {
@@ -179,13 +187,25 @@ function drawGraph() {
 
       link.filter(function(d) {
           if (d.source == z) {connectedTo[d.target.index] = true
-            return true
+            return false
           } 
 		  else {
-            return false
+            return true
           }
         })
-        .style("stroke-opacity", 1)
+        .style("stroke-opacity", .1)
+
+      repoLabel.filter(function(d) {return !connectedTo[d.index]})
+        .style("fill-opacity", 0.1);
+
+      repoLabel.filter(function(d) {return connectedTo[d.index]})
+        .attr("font-weight", "bold")
+		
+	  loginLabel.filter(function(d) {return !connectedTo[d.index]})
+        .style("fill-opacity", 0.1);
+
+      loginLabel.filter(function(d) {return connectedTo[d.index]})
+        .attr("font-weight", "bold")
 
       node.filter(function(d) {return connectedTo[d.index]})
         .style("stroke-width", 4);

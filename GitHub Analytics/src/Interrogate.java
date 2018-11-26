@@ -24,23 +24,22 @@ public class Interrogate
 {
 	static GitHubClient client = new GitHubClient();
 	public static String DESTINATION = "";
-	public static String CURRENT_DATE = "";
 	
 	public static void main(String[] args) throws IOException 
 	{
-		client.setCredentials("", "a7316ed0fdfc9d8bdfe96c2642953a45cae7e49a");
-		Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss");
-        CURRENT_DATE = sdf.format(date);
-        DESTINATION = new File("").getAbsolutePath() + "/";
-
-		
-		String user = "";	//set default user	
-		buildDatabase(user);
+		//driver function
+		client.setCredentials("GithubTesteroni", "a7316ed0fdfc9d8bdfe96c2642953a45cae7e49a");
+        DESTINATION = new File("").getAbsolutePath() + "/js/data";		
+		String user = "GithubTesteroni";	//set default user	
+		for(int i = 150; i<=250;i+=50)
+		{
+			buildDatabase(user, i);
+		}
 	}
 
 	public static List<String> getFollowings(String user) throws IOException
 	{
+		//returns list of logins of users the input user follows
 		UserService service = new UserService(client);
 		List<User> followingList = service.getFollowing(user);
 		List<String> stringList = new ArrayList<String>();
@@ -53,14 +52,15 @@ public class Interrogate
 
 	public static int getRepos(String user) throws IOException
 	{
+		//returns number of public repos a user owns(+private if authorised)
 		UserService service = new UserService(client);
 		User u = service.getUser(user);
 		return u.getPublicRepos()+u.getTotalPrivateRepos();
 	}
 
-	public static void buildDatabase(String user) throws IOException
+	public static void buildDatabase(String user, int limit) throws IOException
 	{
-		int limit = 50;
+		//builds database of users and connections, stored in custom class
 		int index = 0;
 		List<LinkIndex> linkIndex = new ArrayList<LinkIndex>();
 		Queue<String> q = new LinkedList<>();
@@ -94,30 +94,19 @@ public class Interrogate
 				linkIndex.add(new LinkIndex(userIndex.get(user), userIndex.get(follow)));
 			}
 		}
-//		for (String key : userIndex.keySet()) {
-//			System.out.print(key+": ");
-//			System.out.println(userIndex.get(key));
-//		}
-//		System.out.println();
-//		for(LinkIndex x : linkIndex)
-//		{
-//			System.out.println(x.source+" : "+x.to);
-//		}
 		
 		tj.index = linkIndex;
 		System.out.println(tj.users.size());
-		System.out.println(tj.index.size());
-		writeJSON(tj);
+		writeJSON(tj, limit);
 	}
 	
-	static void writeJSON(ToJSON tj) throws JsonProcessingException
+	static void writeJSON(ToJSON tj, int limit) throws JsonProcessingException
 	{
-		 // write objects to JSON file
+		//writes custom class to json file
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         String usersJSON = mapper.writeValueAsString(tj);
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(DESTINATION + "/" + CURRENT_DATE + "_" +
-                "users_follows" + ".json"))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(DESTINATION + "/" +limit+ "graph" + ".json"))) {
             bw.write(usersJSON);
         } catch (Exception e) {
             System.out.println("Issue with createUsersFollowsJSON()");

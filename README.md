@@ -5,3 +5,7 @@ A repository containing my CS3012 Project, which is a Github user data visualiza
 # Known Bugs:
 
 Occasionally when swapping between datasets quickly, the graph can become stuck in the top-left corner. Jiggling an exposed node slightly corrects the issue.
+
+# Running Code:
+
+https://tobiashallen.github.io/GitHub_Analytics/

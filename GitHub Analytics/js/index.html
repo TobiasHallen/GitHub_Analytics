@@ -75,9 +75,9 @@ function drawGraph() {
 
 	  	
     var colour = function(d) {
-      var r = Math.floor(250 - (75 * (d.repos / 8242)));
-      var g = Math.floor(100 - (75 * (d.repos / 8242)));
-      var b = Math.floor(100 - (75 * (d.repos / 8242)));
+      var r = Math.floor(250 - (75 * (d.repos / 1000)));
+      var g = Math.floor(100 - (100 * (d.repos / 1000)));
+      var b = Math.floor(100 - (100 * (d.repos / 1000)));
       return d3.rgb(r, g, b);
     };
 	
